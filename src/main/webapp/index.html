@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>LOGIN</title>
+    <link rel="stylesheet" type="text/css" href="css/login.css">
+    <link rel="icon" type="image/x-ico" href="">
+    <script src="js/vue.js"></script>
+</head>
+<body>
+    <div id="login-page">
+            <form class="login" method="get" action="LoginServlet">
+                <h2 class="login-head">login</h2>
+                <div class="login-form">
+                    <input type="text" class="login-control" v-model="username" value placeholder="用户名"/> {{username}}
+                    <br>
+                    <input type="password" class="login-control" v-model="password" value placeholder="密码"/> {{password}}
+                    <br>
+                    <input type="submit" class="login-control" value="登录">
+                    <hr>
+                    <div class="register">
+                        <a href="user.html">还没有账号？创建账号</a>
+                    </div>
+                </div>
+            </form>
+    </div>
+
+    <script>
+        new Vue({
+            el:'#login-page',
+            data(){
+                return {
+                    username:"",
+                    password:"",
+                }
+            }
+        })
+    </script>
+</body>
+</html>
