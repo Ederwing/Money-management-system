@@ -1,9 +1,8 @@
 package dao.impl;
 
-import dao.Dao;
+import dao.UserDao;
 import model.User;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
 import utils.DBUtil;
 
@@ -14,7 +13,7 @@ import java.sql.SQLException;
 import java.util.LinkedList;
 
 @Component("userDao")
-public class UserDao implements Dao {
+public class UserDaoImpl implements UserDao {
     @Autowired
     private DBUtil dbu;
     public LinkedList<User> select_all() {
@@ -45,21 +44,24 @@ public class UserDao implements Dao {
     }
 
     @Override
-    public Object select(Object tar) {
-        User user = (User) tar;
+    public User selectById(String tar) {
+        User user = new User();
         String sql = "select * from user where id = ?";
         Connection conn = null;
         try {
             conn = dbu.getConnection();
             PreparedStatement ps = conn.prepareStatement(sql);
-            ps.setString(1,user.getID());
+            ps.setString(1,tar);
             ResultSet rs = ps.executeQuery();
             if(rs.next()){
+                user.setID(rs.getString("id"));
                 user.setSuper(rs.getBoolean("issuper"));
                 user.setPassword(rs.getString("password"));
             }else {
                 user = null;
             }
+            rs.close();
+            ps.close();
         } catch (ClassNotFoundException e) {
             throw new RuntimeException(e);
         } catch (SQLException e) {
@@ -71,18 +73,18 @@ public class UserDao implements Dao {
     }
 
     @Override
-    public int insert(Object user) {
+    public int insert(User user) {
         int result = 0;
-        User tem = (User) user;
         String sql = "insert into user values(?,?,?)";
         Connection conn = null;
         try {
             conn = dbu.getConnection();
             PreparedStatement ps = conn.prepareStatement(sql);
-            ps.setString(1,tem.getID());
-            ps.setString(2,tem.getPassword());
-            ps.setBoolean(3,tem.isSuper());
+            ps.setString(1,user.getID());
+            ps.setString(2,user.getPassword());
+            ps.setBoolean(3,user.isSuper());
             result = ps.executeUpdate();
+            ps.close();
         } catch (ClassNotFoundException e) {
             throw new RuntimeException(e);
         } catch (SQLException e) {
@@ -94,16 +96,16 @@ public class UserDao implements Dao {
     }
 
     @Override
-    public int delete(Object user) {
+    public int deleteById(String id) {
         int result = 0;
-        User tem = (User) user;
         String sql = "delete from user where id = ?";
         Connection conn = null;
         try {
             conn = dbu.getConnection();
             PreparedStatement ps = conn.prepareStatement(sql);
-            ps.setString(1,tem.getID());
+            ps.setString(1,id);
             result = ps.executeUpdate();
+            ps.close();
         } catch (ClassNotFoundException e) {
             throw new RuntimeException(e);
         } catch (SQLException e) {
